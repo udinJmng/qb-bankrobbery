@@ -1,5 +1,5 @@
-QBCore = exports['qb-core']:GetCoreObject()
-isLoggedIn = LocalPlayer.state['isLoggedIn']
+ESX = exports['cnm-core']:getSharedObject() -- it must be es_extended (You can change the export name)
+isLoggedIn = false
 currentThermiteGate = 0
 CurrentCops = 0
 IsDrilling = false
@@ -43,8 +43,8 @@ AddEventHandler('onResourceStop', function(resource)
     ResetBankDoors()
 end)
 
-RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-    QBCore.Functions.TriggerCallback('qb-bankrobbery:server:GetConfig', function(config1, config2, config3)
+RegisterNetEvent('esx:playerLoaded', function()
+    ESX.TriggerServerCallback('qb-bankrobbery:server:GetConfig', function(config1, config2, config3)
         Config.PowerStations = config1
         Config.BigBanks = config2
         Config.SmallBanks = config3
@@ -53,7 +53,7 @@ RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     isLoggedIn = true
 end)
 
-RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
+RegisterNetEvent('playerDropped', function()
     isLoggedIn = false
 end)
 
@@ -247,7 +247,7 @@ RegisterNetEvent('electronickit:UseElectronickit', function()
     local pos = GetEntityCoords(ped)
     Config.OnEvidence(pos, 85)
     if closestBank == 0 or not inElectronickitZone then return end
-    QBCore.Functions.TriggerCallback('qb-bankrobbery:server:isRobberyActive', function(isBusy)
+    ESX.TriggerServerCallback('qb-bankrobbery:server:isRobberyActive', function(isBusy)
         if not isBusy then
             if CurrentCops >= Config.MinimumFleecaPolice then
                 if not Config.SmallBanks[closestBank]["isOpened"] then
@@ -456,7 +456,7 @@ CreateThread(function()
         end)
         for k in pairs(Config.SmallBanks[i]["lockers"]) do
             if Config.UseTarget then
-                exports['qb-target']:AddBoxZone('fleeca_'..i..'_coords_locker_'..k, Config.SmallBanks[i]["lockers"][k]["coords"], 1.0, 1.0, {
+                exports['cnm-target']:AddBoxZone('fleeca_'..i..'_coords_locker_'..k, Config.SmallBanks[i]["lockers"][k]["coords"], 1.0, 1.0, { -- it must be qtarget or ox_target
                     name = 'fleeca_'..i..'_coords_locker_'..k,
                     heading = Config.SmallBanks[i]["heading"].closed,
                     minZ = Config.SmallBanks[i]["lockers"][k]["coords"].z - 1,
@@ -487,7 +487,7 @@ CreateThread(function()
                 })
                 lockerZone:onPlayerInOut(function(inside)
                     if inside and closestBank ~= 0 and not IsDrilling and Config.SmallBanks[i]["isOpened"] and not Config.SmallBanks[i]["lockers"][k]["isOpened"] and not Config.SmallBanks[i]["lockers"][k]["isBusy"] then
-                        exports['qb-core']:DrawText(Lang:t("general.break_safe_open_option_drawtext"), 'right')
+                        --exports['qb-core']:DrawText(Lang:t("general.break_safe_open_option_drawtext"), 'right')
                         currentLocker = k
                     else
                         if currentLocker == k then
