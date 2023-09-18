@@ -443,15 +443,10 @@ CreateThread(function()
         bankZone:onPlayerInOut(function(inside)
             inElectronickitZone = inside
             if inside and not Config.SmallBanks[i]["isOpened"] then
-                Config.ShowRequiredItems({
-                    [1] = {name = QBCore.Shared.Items["electronickit"]["name"], image = QBCore.Shared.Items["electronickit"]["image"]},
-                    [2] = {name = QBCore.Shared.Items["trojan_usb"]["name"], image = QBCore.Shared.Items["trojan_usb"]["image"]}
-                }, true)
+
+                        exports['cnm-tasknotify']:SendAlert('inform', 'Kamu membutuhkan Motherboard 1 dan Usb 1!']
             else
-                Config.ShowRequiredItems({
-                    [1] = {name = QBCore.Shared.Items["electronickit"]["name"], image = QBCore.Shared.Items["electronickit"]["image"]},
-                    [2] = {name = QBCore.Shared.Items["trojan_usb"]["name"], image = QBCore.Shared.Items["trojan_usb"]["image"]}
-                }, false)
+                            -- nothing cause ox inventory can't show notify item like qb core lol
             end
         end)
         for k in pairs(Config.SmallBanks[i]["lockers"]) do
